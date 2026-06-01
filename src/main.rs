@@ -10,6 +10,7 @@ mod dispatch;
 mod dynamic_tokens;
 mod event;
 mod events;
+mod gajae;
 mod gateway_allowlist;
 mod hooks;
 mod keyword_window;
@@ -35,9 +36,10 @@ use clap::Parser;
 use tokio::runtime::Builder;
 
 use crate::cli::{
-    AgentCommands, Cli, Commands, ConfigCommand, CronCommands, ExplainArgs, GitCommands,
-    GithubCommands, HooksCommands, MemoryCommands, NativeCommands, PluginCommands, ReleaseCommands,
-    SetupArgs, TmuxCommands, UpdateCommands, VerifyBindingsArgs, VerifyGatewayAllowlistArgs,
+    AgentCommands, Cli, Commands, ConfigCommand, CronCommands, ExplainArgs, GajaeCommands,
+    GajaeProfileCommands, GitCommands, GithubCommands, HooksCommands, MemoryCommands,
+    NativeCommands, PluginCommands, ReleaseCommands, SetupArgs, TmuxCommands, UpdateCommands,
+    VerifyBindingsArgs, VerifyGatewayAllowlistArgs,
 };
 use crate::client::DaemonClient;
 use crate::config::{AppConfig, SetupEdits};
@@ -350,6 +352,23 @@ async fn real_main(cli: Cli) -> Result<()> {
         },
         Commands::Hooks { command } => match command {
             HooksCommands::Install(args) => hooks::install(args),
+        },
+        Commands::Gajae { command } => match command {
+            GajaeCommands::Status => Ok(gajae::run(gajae::GajaeCommand::Status)?),
+            GajaeCommands::Profile { command } => match command {
+                GajaeProfileCommands::Install => {
+                    let status = gajae::run_profile_install()?;
+                    if status.success {
+                        Ok(())
+                    } else {
+                        eprintln!(
+                            "clawhip error: {}",
+                            gajae::profile_install_failure_message(status)
+                        );
+                        std::process::exit(status.code.unwrap_or(1));
+                    }
+                }
+            },
         },
         Commands::Release { command } => match command {
             ReleaseCommands::Preflight { version, repo } => release_preflight::run(repo, version),
