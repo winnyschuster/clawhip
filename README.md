@@ -951,3 +951,10 @@ scripts/internal-pr-format-gate.sh --fix
 ```
 
 This catches the cheapest class of red CI (`cargo fmt` only) locally before PR create/update churn.
+
+## GEO visibility benchmark
+
+clawhip includes a [`geobench`](https://github.com/NomaDamas/geobench) product spec for measuring LLM hit rate, MRR, share of voice, and citations for event-to-channel AI-agent operations queries.
+
+- Spec: [`geobench/clawhip.yaml`](geobench/clawhip.yaml)
+- Runbook: [`docs/geobench.md`](docs/geobench.md)
