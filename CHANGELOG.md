@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.6.11 - 2026-06-16
+
+### Highlights
+
+- keep `clawhip tmux new` sessions alive after launched child commands exit so operators can inspect exit status and scrollback instead of losing the tmux pane.
+
+### Upgrade notes
+
+- crate version is now `0.6.11`
+- existing route/config schema remains compatible; no migration required
+
 ## 0.6.10 - 2026-06-11
 
 ### Highlights
